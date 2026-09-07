@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Torre OSI — Aprende Redes</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07111f;--panel:#0d1b2e;--text:#eef6ff;--muted:#91a6bd;
+  --accent:#4cc9f0;--accent2:#7b61ff;--line:#29425e;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;
+  color:var(--text);background:
+  radial-gradient(circle at 20% 10%,#15345a55,transparent 35%),
+  radial-gradient(circle at 80% 20%,#4c2d9850,transparent 30%),var(--bg);
+  min-height:100vh;overflow-x:hidden;
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;
+  background-image:linear-gradient(#5a83a622 1px,transparent 1px),linear-gradient(90deg,#5a83a622 1px,transparent 1px);
+  background-size:45px 45px;animation:grid 18s linear infinite;
+}
+@keyframes grid{to{background-position:45px 45px}}
+header{min-height:92vh;display:grid;place-items:center;padding:60px 20px;position:relative}
+.hero{text-align:center;max-width:900px;animation:rise .9s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(35px)}to{opacity:1;transform:none}}
+.badge{display:inline-block;border:1px solid #4cc9f066;background:#4cc9f015;color:#9fe8ff;padding:8px 15px;border-radius:99px;font-size:.85rem;letter-spacing:.08em}
+h1{font-size:clamp(3.2rem,9vw,7rem);line-height:.9;margin:22px 0 20px;letter-spacing:-.06em}
+.gradient{background:linear-gradient(90deg,var(--accent),#fff,var(--accent2));background-size:200%;-webkit-background-clip:text;color:transparent;animation:shine 5s linear infinite}
+@keyframes shine{to{background-position:200%}}
+.hero p{color:var(--muted);font-size:1.15rem;line-height:1.7;max-width:650px;margin:auto}
+.btns{margin-top:30px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+button,.btn{border:0;cursor:pointer;color:#06111d;background:var(--accent);padding:13px 20px;border-radius:12px;font-weight:800;transition:.25s;text-decoration:none}
+button:hover,.btn:hover{transform:translateY(-3px);box-shadow:0 10px 30px #4cc9f044}
+.secondary{background:#ffffff0d;color:var(--text);border:1px solid var(--line)}
+section{max-width:1150px;margin:auto;padding:70px 20px}
+.section-title{text-align:center;margin-bottom:45px}
+.section-title h2{font-size:2.5rem;margin-bottom:10px}
+.section-title p{color:var(--muted)}
+.tower-wrap{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:30px;align-items:center}
+.tower{
+  display:flex;flex-direction:column-reverse;gap:8px;padding:18px;
+  background:#081525cc;border:1px solid var(--line);border-radius:22px;
+  box-shadow:0 30px 80px #0008;position:relative;
+}
+.tower:after{content:"";position:absolute;left:50%;top:-35px;bottom:-35px;width:2px;background:linear-gradient(var(--accent),transparent,var(--accent2));opacity:.35;z-index:-1}
+.layer{
+  min-height:70px;border:1px solid #ffffff18;border-radius:13px;padding:12px 15px;
+  display:flex;align-items:center;gap:13px;cursor:pointer;position:relative;overflow:hidden;
+  background:linear-gradient(90deg,#ffffff08,#ffffff02);transition:.3s;
+}
+.layer:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,#ffffff18,transparent);transform:translateX(-100%);transition:.6s}
+.layer:hover:before{transform:translateX(100%)}
+.layer:hover,.layer.active{transform:scale(1.035);border-color:#4cc9f088;box-shadow:0 0 25px #4cc9f022}
+.num{font-size:1.5rem;font-weight:900;width:38px;color:#4cc9f0}
+.layer strong{display:block}.layer small{color:var(--muted)}
+.info{
+  min-height:390px;background:#0b192bde;border:1px solid var(--line);border-radius:22px;padding:28px;
+  backdrop-filter:blur(12px);animation:card .45s ease
+}
+@keyframes card{from{opacity:.3;transform:translateX(15px)}to{opacity:1;transform:none}}
+.info .icon{font-size:3rem}.info h3{font-size:2rem;margin:8px 0}.info p{color:var(--muted);line-height:1.7}
+.tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.tag{padding:7px 10px;border-radius:99px;background:#ffffff0b;border:1px solid #ffffff16;font-size:.8rem}
+.side{padding:22px;border-left:2px solid #4cc9f044}.side h3{margin-bottom:12px}.side p{color:var(--muted);line-height:1.6}
+.packet-area{
+  margin-top:30px;border:1px solid var(--line);border-radius:22px;padding:30px;text-align:center;
+  background:#071525aa;overflow:hidden
+}
+.network{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.node{width:115px;height:90px;border:1px solid #4cc9f055;border-radius:16px;display:grid;place-items:center;background:#ffffff08}
+.line{height:2px;flex:1;background:var(--line);position:relative}
+.packet{position:absolute;width:13px;height:13px;border-radius:50%;background:var(--accent);box-shadow:0 0 20px var(--accent);top:50%;transform:translateY(-50%);left:0}
+.animating .packet{animation:travel 2.2s ease-in-out infinite}
+@keyframes travel{0%{left:0}100%{left:calc(100% - 13px)}}
+.stack{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
+.card{padding:22px;border:1px solid var(--line);border-radius:18px;background:#ffffff06;transition:.3s}
+.card:hover{transform:translateY(-7px);background:#ffffff0b}
+.card h3{margin:10px 0}.card p{color:var(--muted);line-height:1.6}
+footer{text-align:center;color:var(--muted);padding:50px 20px;border-top:1px solid #ffffff0d}
+@media(max-width:850px){.tower-wrap{grid-template-columns:1fr}.side{display:none}.stack{grid-template-columns:1fr}.network{flex-wrap:wrap}.line{min-width:60px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hero">
+    <span class="badge">REDES DE COMUNICACIONES · MODELO OSI</span>
+    <h1>La <span class="gradient">Torre OSI</span></h1>
+    <p>Explora las 7 capas que explican cómo viaja la información desde una aplicación hasta el medio físico.</p>
+    <div class="btns">
+      <a class="btn" href="#torre">Explorar la torre ↓</a>
+      <button class="secondary" onclick="startPacket()">▶ Simular paquete</button>
+    </div>
+  </div>
+</header>
+
+<section id="torre">
+  <div class="section-title">
+    <h2>Las 7 capas</h2>
+    <p>Haz clic en un piso para descubrir qué ocurre en él.</p>
+  </div>
+
+  <div class="tower-wrap">
+    <div class="side">
+      <h3>📦 Encapsulación</h3>
+      <p>Cuando enviamos datos, cada capa añade información de control. El mensaje baja por la torre hasta convertirse en bits.</p>
+      <br>
+      <h3>🔄 Desencapsulación</h3>
+      <p>Al llegar al destino ocurre el proceso inverso: cada capa interpreta y elimina la información correspondiente.</p>
+    </div>
+
+    <div class="tower" id="tower"></div>
+
+    <div class="info" id="info"></div>
+  </div>
+
+  <div class="packet-area" id="packetArea">
+    <h2>📡 Viaje de un paquete</h2>
+    <p style="color:var(--muted);margin:8px 0 25px">Pulsa el botón para ver una simulación sencilla del envío.</p>
+    <div class="network">
+      <div class="node">💻<br>Emisor</div>
+      <div class="line"><span class="packet"></span></div>
+      <div class="node">🌐<br>Red</div>
+      <div class="line"><span class="packet"></span></div>
+      <div class="node">🖥️<br>Destino</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-title">
+    <h2>¿Cómo recordarlas?</h2>
+    <p>Una forma rápida de relacionar cada capa con su función.</p>
+  </div>
+  <div class="stack">
+    <div class="card"><div style="font-size:2rem">🧩</div><h3>7 → Aplicación</h3><p>Servicios de red que utilizan directamente las aplicaciones.</p></div>
+    <div class="card"><div style="font-size:2rem">🔐</div><h3>6 → Presentación</h3><p>Formato, codificación, compresión y cifrado de los datos.</p></div>
+    <div class="card"><div style="font-size:2rem">🤝</div><h3>5 → Sesión</h3><p>Establece, mantiene y termina sesiones de comunicación.</p></div>
+    <div class="card"><div style="font-size:2rem">🚚</div><h3>4 → Transporte</h3><p>Comunicación extremo a extremo, puertos, fiabilidad y control.</p></div>
+    <div class="card"><div style="font-size:2rem">🗺️</div><h3>3 → Red</h3><p>Direccionamiento lógico y encaminamiento entre redes.</p></div>
+    <div class="card"><div style="font-size:2rem">🔗</div><h3>2 → Enlace</h3><p>Tramas, direcciones MAC y comunicación dentro del enlace.</p></div>
+    <div class="card"><div style="font-size:2rem">⚡</div><h3>1 → Física</h3><p>Transmisión de bits mediante señales eléctricas, ópticas o radio.</p></div>
+  </div>
+</section>
+
+<footer>
+  <p>Torre OSI · Página educativa interactiva</p>
+</footer>
+
+<script>
+const layers=[
+ {n:1,name:"Física",icon:"⚡",desc:"Transmite bits mediante señales físicas. Define aspectos como conectores, medios, niveles de señal y modulación.",tags:["Bits","Cable","Fibra óptica","Radio"]},
+ {n:2,name:"Enlace de datos",icon:"🔗",desc:"Organiza los bits en tramas y permite la comunicación entre dispositivos conectados al mismo enlace. Trabaja con direcciones MAC.",tags:["Ethernet","Wi‑Fi","MAC","Switch"]},
+ {n:3,name:"Red",icon:"🗺️",desc:"Se ocupa del direccionamiento lógico y de decidir cómo llegar desde una red de origen hasta una red de destino.",tags:["IP","IPv4","IPv6","Router","ICMP"]},
+ {n:4,name:"Transporte",icon:"🚚",desc:"Proporciona comunicación extremo a extremo. Puede ofrecer fiabilidad, control de flujo y multiplexación mediante puertos.",tags:["TCP","UDP","Puertos","Segmentos"]},
+ {n:5,name:"Sesión",icon:"🤝",desc:"Gestiona el establecimiento, mantenimiento y finalización de sesiones de comunicación entre aplicaciones.",tags:["Sesiones","Control","Diálogo"]},
+ {n:6,name:"Presentación",icon:"🔐",desc:"Se ocupa de cómo se representan los datos: codificación, transformación, compresión y cifrado.",tags:["Cifrado","JPEG","ASCII","TLS"]},
+ {n:7,name:"Aplicación",icon:"🧩",desc:"Es la capa más cercana al usuario. Proporciona servicios de red que utilizan las aplicaciones.",tags:["HTTP","DNS","FTP","SMTP"]}
+];
+
+const tower=document.getElementById("tower");
+const info=document.getElementById("info");
+
+layers.forEach((l,i)=>{
+ const el=document.createElement("div");
+ el.className="layer";
+ el.innerHTML=`<span class="num">${l.n}</span><div><strong>${l.name}</strong><small>Capa ${l.n}</small></div>`;
+ el.onclick=()=>selectLayer(i,el);
+ tower.appendChild(el);
+});
+function selectLayer(i,el){
+ document.querySelectorAll(".layer").forEach(x=>x.classList.remove("active"));
+ el.classList.add("active");
+ const l=layers[i];
+ info.innerHTML=`<div class="icon">${l.icon}</div><h3>Capa ${l.n}: ${l.name}</h3><p>${l.desc}</p><div class="tags">${l.tags.map(x=>`<span class="tag">${x}</span>`).join("")}</div>`;
+ info.style.animation="none";requestAnimationFrame(()=>info.style.animation="card .45s ease");
+}
+selectLayer(6,document.querySelector(".layer:last-child"));
+
+function startPacket(){
+ const area=document.getElementById("packetArea");
+ area.classList.remove("animating"); void area.offsetWidth; area.classList.add("animating");
+ setTimeout(()=>area.classList.remove("animating"),7000);
+}
+</script>
+</body>
+</html>
